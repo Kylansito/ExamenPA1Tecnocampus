@@ -38,4 +38,42 @@ public class Serie extends Produccio {
         return false;
     }
 
+    public int temporadaMesCapitols() {
+     /* Troba la temporada de la sèrie que té més capítols, en cas de
+    coincidència és irrellevant el valor retornat. Valors possibles
+    de retorn: 1, 2, 3, .... quantesTemporades */
+        int ret = 0;
+        int quants = 0;
+
+        for(int i = 0; i < quantesTemporades; i++){
+            int res = temporades[i].quantsCapitols();
+
+            if(res > quants){
+                ret = i;
+                quants = res;
+            }
+        }
+        return ret + 1;
+    }
+
+    public int teCapitol(int quina, String titol) throws Exception{
+
+        if(!temporades[quina-1].Membre(new Capitol(0, titol))){
+            throw new Exception("No hi es");
+        }
+        return temporades[quina-1].quin(new Capitol(0, titol)).getDurada();
+
+    }
+
+    public String comesDiu(int durada) throws Exception {
+        for(int i = 0; i < quantesTemporades; i++){
+            try{
+                return temporades[i].titolDe(durada);
+            } catch (Exception e) {
+            }
+        }
+        throw new Exception("No hi es");
+    }
+
+
 }

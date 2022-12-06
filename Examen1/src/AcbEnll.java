@@ -1,6 +1,6 @@
 import org.w3c.dom.Node;
 
-public class AcbEnll<Capitol extends Comparable<Capitol>> implements Acb{
+public class AcbEnll<c extends Comparable<Capitol>> implements Acb{
 
     private class NodeA {
         Capitol inf; //La classe Capitol la trobaràs més endavant
@@ -47,6 +47,78 @@ public class AcbEnll<Capitol extends Comparable<Capitol>> implements Acb{
             }
             return true;
         }
+
+        private NodeA esborrarRecursiu(Capitol c) throws Exception {
+
+            if(inf.compareTo(c) > 0) {
+                if(esq != null) {
+                    esq = esq.esborrarRecursiu(c);
+                    return this;
+                } else throw new Exception("L'element no hi es");
+
+            } else if(inf.compareTo(c) < 0){
+                if(dret != null) {
+                    dret = dret.esborrarRecursiu(c);
+                    return this;
+                } else throw new Exception("L'element no hi es");
+
+            } else {
+                if(esq != null && dret != null) {
+                    inf = dret.buscarMinim();
+                    dret = dret.esborrarRecursiu(c);
+                    return this;
+                } else if(esq == null && dret == null) return null;
+
+                else if(esq == null) return dret;
+                else return esq;
+            }
+        }
+
+        private Capitol buscarMinim() {
+            if(esq == null) {
+                return inf;
+            }
+            NodeA aux = esq;
+            while(aux.esq != null) {
+                aux = aux.esq;
+            }
+            return aux.inf;
+        }
+
+        private int quantsCapitols(){
+            int cont = 1;
+            if(esq != null){
+                cont += esq.quantsCapitols();
+            }
+            if(dret != null){
+                cont += dret.quantsCapitols();
+            }
+            return cont;
+        }
+
+        public Capitol buscarCapitol(Capitol c){
+            if(inf.compareTo(c) > 0) {
+                return esq.buscarCapitol(c);
+            } else if(inf.compareTo(c) < 0){
+                return dret.buscarCapitol(c);
+            } else {
+                return inf;
+            }
+        }
+
+        public String titolDeRecursiu(int durada) throws Exception {
+            if(inf.getDurada() == durada){
+                return inf.getTitol();
+            }
+
+            if(esq != null){
+                return esq.titolDeRecursiu(durada);
+            }
+            if(dret != null){
+                return dret.titolDeRecursiu(durada);
+            }
+            throw new Exception("No hi es");
+        }
     }
 
     private NodeA arrel;
@@ -61,6 +133,7 @@ public class AcbEnll<Capitol extends Comparable<Capitol>> implements Acb{
 
     @Override
     public void Esborrar(Comparable e) throws Exception {
+        arrel = arrel.esborrarRecursiu((Capitol) e);
 
     }
 
@@ -101,5 +174,17 @@ public class AcbEnll<Capitol extends Comparable<Capitol>> implements Acb{
     @Override
     public void Buidar() {
         this.arrel = null;
+    }
+
+    public int quantsCapitols(){
+        return arrel.quantsCapitols();
+    }
+
+    public Capitol quin(Capitol c){
+        return arrel.buscarCapitol(c);
+    }
+
+    public String titolDe(int durada) throws Exception {
+        return arrel.titolDeRecursiu(durada);
     }
 }
